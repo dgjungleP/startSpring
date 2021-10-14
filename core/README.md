@@ -12,6 +12,7 @@
 #核心组件
 - BeanFactory
 - ApplicationContext `(BeanFactory的扩展超集)`
+- FactoryBean
 > 注：建议使用BeanFactory而不使用ApplicationContext进行扩展  
 #Bean
 - 在容器中以`BeanDefinition` 的形式存在
