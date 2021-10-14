@@ -5,7 +5,8 @@
 > `Bean` Spring创建的实例对象  
 > `ApplicationContext` 来实例化、管理和组装`Bean`   
 > `ApplicationContext` 支持注册在容器外创建的现有对象，同过`GetBeanFactory()` 获取到 `DefaultListableBeanFactory` 进行注册   
-> 可以结合 `AspectJ` 在容器外创建实例
+> 可以结合 `AspectJ` 在容器外创建实例  
+> `Bean`的运行时类型，可以使用`AOP Proxy` 进行代理
 #源码包
 - `org.springframework.beans`
 - `org.springframework.context`
