@@ -11,15 +11,24 @@
 > 利用`JMX MBeans` 是一种特殊的`Setter` 注入  
 > `循环依赖问题`:可以使用`Setter`注入替代`构造器注入`缓解  
 > 主动实例化单例对象，也可以配置成懒加载形式  
-> `方法注入` Spring是通过`CGLIB` 字节码编程实现
+> `方法注入` Spring是通过`CGLIB` 字节码编程实现  
+> 使用`Scope-Proxy`协助完成方法 注入
+
 #源码包
 - `org.springframework.beans`
 - `org.springframework.context`
-#核心组件
+#组件
 - BeanFactory
 - ApplicationContext `(BeanFactory的扩展超集)`
 - FactoryBean  
 - ApplicationContextAware 
+- WebApplicationInitializer
+- DispatcherServlet   
+- RequestContextListener
+- RequestContextFilter 
+- Scope
+- CustomScopeConfigurer 
+
 > 注：建议使用BeanFactory而不使用ApplicationContext进行扩展  
 #Bean
 - 在容器中以`BeanDefinition` 的形式存在
@@ -31,3 +40,12 @@
 
 #FactoryBean
 ## ServiceLocatorFactoryBean
+#Scope
+> Scope包含以下几种：  
+>- singleton
+>- prototype
+>- request
+>- session
+>- application
+>- websocket
+>- SimpleThreadScope
