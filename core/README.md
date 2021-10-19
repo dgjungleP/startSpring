@@ -22,12 +22,19 @@
 - ApplicationContext `(BeanFactory的扩展超集)`
 - FactoryBean  
 - ApplicationContextAware 
+- BeanNameAware
 - WebApplicationInitializer
 - DispatcherServlet   
 - RequestContextListener
 - RequestContextFilter 
 - Scope
 - CustomScopeConfigurer 
+- InitializingBean(不推荐使用,建议使用`@PostConstruct`)
+- DisposableBean(不推荐使用,建议使用`@PreDestroy`)
+- BeanPostProcess
+- Lifecycle
+- LifecycleProcess
+- SmartLifecycle 
 
 > 注：建议使用BeanFactory而不使用ApplicationContext进行扩展  
 #Bean
@@ -49,3 +56,4 @@
 >- application
 >- websocket
 >- SimpleThreadScope
+>#BeanPostProcess
