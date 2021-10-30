@@ -12,7 +12,8 @@
 > `循环依赖问题`:可以使用`Setter`注入替代`构造器注入`缓解  
 > 主动实例化单例对象，也可以配置成懒加载形式  
 > `方法注入` Spring是通过`CGLIB` 字节码编程实现  
-> 使用`Scope-Proxy`协助完成方法 注入
+> 使用`Scope-Proxy`协助完成方法 注入   
+> `XML注入`的优先级高于`注解注入的`因为`注解注入`比`XML注入`更先执行
 
 #源码包
 - `org.springframework.beans`
@@ -21,6 +22,7 @@
 - BeanFactory
 - ApplicationContext `(BeanFactory的扩展超集)`
 - FactoryBean  
+- Aware
 - ApplicationContextAware 
 - BeanNameAware
 - WebApplicationInitializer
@@ -45,8 +47,9 @@
 
 #BeanFactory
 
-#FactoryBean
-## ServiceLocatorFactoryBean
+
+##ServiceLocatorFactoryBean
+
 #Scope
 > Scope包含以下几种：  
 >- singleton
@@ -56,4 +59,29 @@
 >- application
 >- websocket
 >- SimpleThreadScope
->#BeanPostProcess
+#Extension Points
+##BeanPostProcess
+> 在类实例化过程中后对IOC中的对象进行操作  
+> `ApplicationContext`可以自动识别并注入，还是推荐使用`ConfigurableBeanFactory`来进行注入  
+> 在程序启动时即开始实例化  
+> 部分`AOP auto-proxy`也是`BeanPostProcess`的实例，所以无法作用到其身上
+- AutowiredAnnotationBeanPostProcessor
+- ConfigurationClassPostProcessor
+- CommonAnnotationBeanPostProcessor
+- PersistenceAnnotationBeanPostProcessor
+- EventListenerMethodProcessor
+- RequiredAnnotationBeanPostProcessor
+##BeanFactoryPostProcessor
+> 在类实例化之前对IOC中的对象的Definition进行操作  
+> 修改类实例的源信息
+###PropertySourcesPlaceholderConfigurer 
+> 支持读取配置文件包括：  
+>- 指定文件  
+>- Spring Environment参数  
+>- Java System参数
+###PropertyOverrideConfigurer
+##FactoryBean
+#Annotation
+- @Required (在5.1版本中被弃用了)
+- @Autowired
+- @Inject
