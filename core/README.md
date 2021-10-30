@@ -84,4 +84,18 @@
 #Annotation
 - @Required (在5.1版本中被弃用了)
 - @Autowired
+> 可以接受数据类型的数组和散列  
+> 如果只有一个构造函数，那么一定会被调用   
+> 如果有多个构造函数需要参与注入，那么有优先选择参数多的那个，并且需要将`required`设置为false  
+> 构造函数不一定为public   
+> 可以使用Java8中的`optinal`来保证不强制注入  
+> 也可以使用`@Nullable`来设置不强制注入
+> 需要调用相同实例身上的事务的时候，可以使用自己注入自己来实现
+- @Resource
+- @Value 
 - @Inject
+- @Required (被遗弃了)
+- @Nullable
+- @Primary
+> 优先注入
+- @Qualifier
