@@ -20,7 +20,9 @@
 >  - 使用了`@Qualifier`和再`CustomAutowireConfigurer`中配置了的Bean对象
 >  - 使用了`@Primary`注解确定了的对象   
 >
-> 可以通过：1.注解 2.AspectJ表达式 3.自定义筛选条件，将对象注入到Bean中  
+> 可以通过：1.注解 2.AspectJ表达式 3.自定义筛选条件，将对象注入到Bean中    
+> 候选组件索引的生成需要依赖`spring-context-indexer` 
+> 查找方法注入模式
 
 #源码包
 - `org.springframework.beans`
@@ -32,6 +34,9 @@
 - Aware
 - ApplicationContextAware 
 - BeanNameAware
+- BeanFactoryAware
+- MessageSourceAware
+- ApplicationContextAware
 - WebApplicationInitializer
 - DispatcherServlet   
 - RequestContextListener
@@ -55,14 +60,27 @@
 - DependencyDescriptor
 - BeanNameGenerator 
     - FullyQualifiedAnnotationBeanNameGenerator  
-
-
+- ScopeMetadataResolver 
+- SpringProperties
+- ContextLoaderListener 
+- DispatcherServlet
+- Lifecycle 
+    - LifecycleProcessor
+    - SmartLifecycle 
+- InitializingBean 
+- DisposableBean 
+- JndiTemplate 
+    - JndiLocatorDelegate
+    - InitialContext  
+    -JndiObjectFactoryBean 
+- Condition 
 #Bean
 - 在容器中以`BeanDefinition` 的形式存在
 - `PropertyEdit`可以修改Bean的注入行为
 
 #ApplicationContext
-
+- AnnotationConfigApplicationContext
+- AnnotationConfigWebApplicationContext
 #BeanFactory
 > 注：建议使用BeanFactory而不使用ApplicationContext进行扩展  
 - SimpleJndiBeanFactory
@@ -89,17 +107,19 @@
 - EventListenerMethodProcessor
 - RequiredAnnotationBeanPostProcessor
 - CommonAnnotationBeanPostProcessor 
+
 > 用以支持JSR-250中所描述的一些注解
 ##BeanFactoryPostProcessor
 > 在类实例化之前对IOC中的对象的Definition进行操作  
 > 修改类实例的源信息
-###PropertySourcesPlaceholderConfigurer 
+- PropertySourcesPlaceholderConfigurer 
 > 支持读取配置文件包括：  
 >- 指定文件  
 >- Spring Environment参数  
 >- Java System参数    
-> 如果使用这个配置来管理，那么`@bean`注入的时候必须是`static`模式  
-###PropertyOverrideConfigurer
+> 如果使用这个配置来管理，那么`@bean`注入的时候必须是`static`模式     
+
+- ropertyOverrideConfigurer
 ##FactoryBean
 #Annotation
 - @Required (在5.1版本中被弃用了)
@@ -122,6 +142,12 @@
 > 支持以`:`来指定默认值  
 > 支持`SpEL`表达式
 - @Inject
+> 可以使用`Provider`作为载体获取注入值   
+> 使用方法和`@Autowired`一样       
+- @Named
+- @ManagedBean
+> 和`@Component`效果一致
+- @Singleton
 - @Nullable
 - @Primary
 > 优先注入
@@ -131,6 +157,8 @@
 - @PostConstruct
 - @PreDestroy
 - @Configuration
+> 在当前类中，调用`@Bean`修饰的方法是合法的 
+> 如果只指定了一个构造函数，那么就不需要用`@Autowired` 来修饰
 - @Bean
 > `@Bean`在`@Configuration`中使用的时候会使用`CGLIB`进行增强，而在`@Component`中没有使用`CGLIB`来拦截和增强方法和属性  
 > 可以使用static的来修饰方法，以达到提前注入的目的  
@@ -138,6 +166,11 @@
 > Java定义的可见性对于`@Bean`修饰的方法没有作用  
 > 在`@Configuration`中使用的时候不能修饰为`private`和`final`  
 > 如果有多个工厂方法修饰同一个Bean对象，那么将采用`贪婪`的方式去自动选择工厂方法
+> 默认情况下，在工厂方法上，默认注册的Bean名称就是方法的名称  
+> 可以基于接口使用该注解，建议有多个符合要求的候选者的时候不使用这种模式  
+> 可以注册多个别名
+- @Description
+> 方便JMX监控
 - @Import
 - @DependsOn 
 - @Component
@@ -155,5 +188,12 @@
 - @ComponentScan          
 - @Lazy  
 > 可以在对象注入的使用使用，也可以在工厂方法中使用   
-- @Scope                                  
+- @Scope     
+> 只用用于实际的Bean类上和工厂方法上             
+> 使用非单例模式的时候，需要注意为对象生成代理对象     
+> 可以设置scoped-proxy模式  
+- @Profile
+- @Conditional  
+- @ImportResource 
+ 
                                                                
