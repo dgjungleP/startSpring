@@ -84,12 +84,13 @@
 - LoadTimeWeaver    
 > 可可以进行配置，实现自己的属性管理器  
 - ContextLoader
+- Resource 
+- ResourceBundleMessageSource
 - MessageSource 
     - MessageFormat 
     - MessageSourceResolvable 
     - DelegatingMessageSource 
     - HierarchicalMessageSource 
-        - ResourceBundleMessageSource
         - ReloadableResourceBundleMessageSource 
         > 支持热加载数据  
           支持从Spring中定义的所有资源中寻找数据
@@ -105,14 +106,19 @@
     - RequestHandledEvent
     - ServletRequestHandledEvent
 - ApplicationListener 
+- ResolvableTypeProvider 
 > 默认情况下，整个发布监听过程是同步的， 所有只有等所有的监听者消费完数据之后，参能继续发布消息  
 > 这种时间监听模式仅用于简单的相同上下文之间的通信，如果复杂的基于事件的通信，参考`Spring Integration`
 - ApplicationEventPublisher 
     - ApplicationEventPublisherAware 
 - ApplicationEventMulticaster 
     - SimpleApplicationEventMulticaster
-
- 
+- AsyncUncaughtExceptionHandler
+- ResourceLoaderAware
+- ApplicationStartup
+    - StartupStep 
+    - FlightRecorderApplicationStartup
+> 只适用于应用启动和程序核心容器，无法替代 java分析器和`Micrometer`这种度量库
 #Bean
 - 在容器中以`BeanDefinition` 的形式存在
 - `PropertyEdit`可以修改Bean的注入行为
@@ -120,6 +126,7 @@
 #ApplicationContext
 - AnnotationConfigApplicationContext
 - AnnotationConfigWebApplicationContext
+- AbstractApplicationContext 
 > 所有在`ApplicationContext`中定义的Bean都可以能被注入`MessageSource`
 #BeanFactory
 > 注：建议使用BeanFactory而不使用ApplicationContext进行扩展  
@@ -246,5 +253,15 @@
 > 可以读取指定配置文件中过的配置信息  
 > 特金额图照顾事故${}的占位符表示  
 > 推荐在使用的使用使用同一个定义级别，使用类注解或者配置在元注解中，在混用的情况下，直接注解会覆盖在元注解中定义
- 
+- @EventListener
+> 可以支持同时监听多个事件   
+> 支持`SpEl`表达式   
+> 支持通过改变监听方法的返回值（甚至可以返回数组）进行事件传递，但是异步监听器不支持这种特性  
+> 可以配合`@Async`实现异步监听  
+> 如果想再异步监听器中发布事件，可以采用注入`ApplicationEventPublisher`来实现  
+> 可以配合`@Order`调整监听顺序  
+> 同时支持泛型事件的监听，但是需要配合`ResolvableTypeProvider`来避免泛型擦除带来的问题
+- @Async 
+- @Order
+
                                                                
