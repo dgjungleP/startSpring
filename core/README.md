@@ -72,8 +72,47 @@
 - JndiTemplate 
     - JndiLocatorDelegate
     - InitialContext  
-    -JndiObjectFactoryBean 
+    - JndiObjectFactoryBean 
+- JndiLocatorDelegate 
 - Condition 
+- Environment
+    - StandardEnvironment
+        - StandardServletEnvironment
+- PropertySource
+    - JndiPropertySource
+    - MutablePropertySources 
+- LoadTimeWeaver    
+> 可可以进行配置，实现自己的属性管理器  
+- ContextLoader
+- MessageSource 
+    - MessageFormat 
+    - MessageSourceResolvable 
+    - DelegatingMessageSource 
+    - HierarchicalMessageSource 
+        - ResourceBundleMessageSource
+        - ReloadableResourceBundleMessageSource 
+        > 支持热加载数据  
+          支持从Spring中定义的所有资源中寻找数据
+        - StaticMessageSource
+    - MessageSourceAware 
+- ResourceBundle
+- ResourceLoader 
+- ApplicationEvent 
+    - ContextRefreshedEvent
+    - ContextStartedEvent
+    - ContextStoppedEvent
+    - ContextClosedEvent
+    - RequestHandledEvent
+    - ServletRequestHandledEvent
+- ApplicationListener 
+> 默认情况下，整个发布监听过程是同步的， 所有只有等所有的监听者消费完数据之后，参能继续发布消息  
+> 这种时间监听模式仅用于简单的相同上下文之间的通信，如果复杂的基于事件的通信，参考`Spring Integration`
+- ApplicationEventPublisher 
+    - ApplicationEventPublisherAware 
+- ApplicationEventMulticaster 
+    - SimpleApplicationEventMulticaster
+
+ 
 #Bean
 - 在容器中以`BeanDefinition` 的形式存在
 - `PropertyEdit`可以修改Bean的注入行为
@@ -81,9 +120,11 @@
 #ApplicationContext
 - AnnotationConfigApplicationContext
 - AnnotationConfigWebApplicationContext
+> 所有在`ApplicationContext`中定义的Bean都可以能被注入`MessageSource`
 #BeanFactory
 > 注：建议使用BeanFactory而不使用ApplicationContext进行扩展  
 - SimpleJndiBeanFactory
+- HierarchicalBeanFactory 
 ##ServiceLocatorFactoryBean
 #Scope
 > Scope包含以下几种：  
@@ -113,6 +154,7 @@
 > 在类实例化之前对IOC中的对象的Definition进行操作  
 > 修改类实例的源信息
 - PropertySourcesPlaceholderConfigurer 
+- PropertySourcesPlaceholderConfigurer 
 > 支持读取配置文件包括：  
 >- 指定文件  
 >- Spring Environment参数  
@@ -121,6 +163,7 @@
 
 - ropertyOverrideConfigurer
 ##FactoryBean
+- LocalContainerEntityManagerFactoryBean
 #Annotation
 - @Required (在5.1版本中被弃用了)
 - @Autowired
@@ -193,7 +236,15 @@
 > 使用非单例模式的时候，需要注意为对象生成代理对象     
 > 可以设置scoped-proxy模式  
 - @Profile
+> 支持使用逻辑表达式
+> 可以用于配置类上指定，也可以用于单独的工厂方法使用
 - @Conditional  
 - @ImportResource 
+- @ActiveProfiles
+> 在`Test`模块中指定运行环境
+- @PropertySource 
+> 可以读取指定配置文件中过的配置信息  
+> 特金额图照顾事故${}的占位符表示  
+> 推荐在使用的使用使用同一个定义级别，使用类注解或者配置在元注解中，在混用的情况下，直接注解会覆盖在元注解中定义
  
                                                                
