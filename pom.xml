@@ -16,6 +16,7 @@
     </parent>
     <modules>
         <module>core</module>
+        <module>resource</module>
     </modules>
     <dependencies>
         <dependency>

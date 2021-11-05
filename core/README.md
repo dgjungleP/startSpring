@@ -21,8 +21,9 @@
 >  - 使用了`@Primary`注解确定了的对象   
 >
 > 可以通过：1.注解 2.AspectJ表达式 3.自定义筛选条件，将对象注入到Bean中    
-> 候选组件索引的生成需要依赖`spring-context-indexer` 
-> 查找方法注入模式
+> 候选组件索引的生成需要依赖`spring-context-indexer`   
+> 查找方法注入模式   
+> 可以使用`war`包的形式部署,详细细节可以参考`SpringContextResourceAdapter`的javadoc
 
 #源码包
 - `org.springframework.beans`
@@ -118,20 +119,26 @@
 - ApplicationStartup
     - StartupStep 
     - FlightRecorderApplicationStartup
+    - ApplicationStartupAware
 > 只适用于应用启动和程序核心容器，无法替代 java分析器和`Micrometer`这种度量库
-#Bean
-- 在容器中以`BeanDefinition` 的形式存在
-- `PropertyEdit`可以修改Bean的注入行为
 
+#Bean
+> 在容器中以`BeanDefinition` 的形式存在  
+>`PropertyEdit`可以修改Bean的注入行为
+- XmlBeanDefinitionReader
+- BeanDefinition 
 #ApplicationContext
 - AnnotationConfigApplicationContext
 - AnnotationConfigWebApplicationContext
 - AbstractApplicationContext 
+- GenericApplicationContext
 > 所有在`ApplicationContext`中定义的Bean都可以能被注入`MessageSource`
 #BeanFactory
 > 注：建议使用BeanFactory而不使用ApplicationContext进行扩展  
 - SimpleJndiBeanFactory
 - HierarchicalBeanFactory 
+- DefaultListableBeanFactory 
+
 ##ServiceLocatorFactoryBean
 #Scope
 > Scope包含以下几种：  
@@ -263,5 +270,6 @@
 > 同时支持泛型事件的监听，但是需要配合`ResolvableTypeProvider`来避免泛型擦除带来的问题
 - @Async 
 - @Order
+- @EnableTransactionManagement
 
                                                                
