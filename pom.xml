@@ -17,6 +17,7 @@
     <modules>
         <module>core</module>
         <module>resource</module>
+        <module>validation</module>
     </modules>
     <dependencies>
         <dependency>
