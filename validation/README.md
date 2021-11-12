@@ -1,1 +1,33 @@
 #Validation
+##组件
+- Validator 
+- DataBinder 
+- BeanWrapper 
+    - BeanWrapperImpl
+- BeanInfo 
+- PropertyChangeListeners 
+- VetoableChangeListeners
+- PropertyEditorSupport 
+- PropertyEditor
+    - ClassEditor 
+    - ByteArrayPropertyEditor
+    - CustomBooleanEditor
+    - CustomCollectionEditor
+    - CustomDateEditor
+    - CustomNumberEditor
+    - FileEditor
+    - InputStreamEditor
+    - LocaleEditor
+    - PatternEditor
+    - PropertiesEditor
+    - StringTrimmerEditor
+    - URLEditor
+- PropertyEditorManager 
+- PropertyEditorRegistrar
+- CustomEditorConfigurer
+- CommandController
+- SimpleFormController
+- ValidationUtils 
+- MessageCodesResolver 
+    - DefaultMessageCodesResolver 
+    
