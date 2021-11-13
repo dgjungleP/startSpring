@@ -30,4 +30,38 @@
 - ValidationUtils 
 - MessageCodesResolver 
     - DefaultMessageCodesResolver 
-    
+- Converter
+- ConverterFactory
+- GenericConverter
+- ConditionalConverter 
+- ConditionalGenericConverter
+- ConversionService 
+    - GenericConversionService 
+- ConverterRegistry
+- ConversionServiceFactory 
+- DefaultConversionService 
+- TypeDescriptor  
+- Formatter 
+    - NumberStyleFormatter
+    - CurrencyStyleFormatter
+    - PercentStyleFormatter 
+    - DateFormatter 
+- AnnotationFormatterFactory
+- FormatterRegistry 
+    - DateTimeFormatterRegistrar
+    - DateFormatterRegistrar
+- FormatterRegistrar 
+- FormattingConversionService 
+- FormattingConversionServiceFactoryBean
+- ValidatorFactory 
+- Validator 
+- LocalValidatorFactoryBean 
+- ConstraintValidator 
+- ConstraintValidatorFactory 
+- SpringConstraintValidatorFactory
+- MethodValidationPostProcessor  
+- DataBinder 
+- BindingResult
+##注解
+- @Constraint
+- @Validated
