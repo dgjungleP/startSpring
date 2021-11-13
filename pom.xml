@@ -19,6 +19,7 @@
         <module>resource</module>
         <module>validation</module>
         <module>spel</module>
+        <module>aop</module>
     </modules>
     <dependencies>
         <dependency>
