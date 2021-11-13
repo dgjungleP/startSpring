@@ -18,6 +18,7 @@
         <module>core</module>
         <module>resource</module>
         <module>validation</module>
+        <module>spel</module>
     </modules>
     <dependencies>
         <dependency>
