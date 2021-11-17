@@ -20,6 +20,7 @@
         <module>validation</module>
         <module>spel</module>
         <module>aop</module>
+        <module>databuffer</module>
     </modules>
     <dependencies>
         <dependency>
