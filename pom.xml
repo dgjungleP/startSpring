@@ -21,6 +21,8 @@
         <module>spel</module>
         <module>aop</module>
         <module>databuffer</module>
+        <module>test</module>
+        <module>dataacess</module>
     </modules>
     <dependencies>
         <dependency>
