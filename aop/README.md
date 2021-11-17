@@ -15,11 +15,32 @@
 > 使用`Aspect`实例化模型,目前spring支持`perthis`、`pertarget` (多实例的情况)   
 > 支持混合使用`XML`和`注解`形式   
 > 在代理模式中，自调用会导致被调用的方法的代理没有办法正常运行，所以在代理模式下尽量不适用自调用  
-> 纯粹的`AspectJ`没有自调用问题
+> 纯粹的`AspectJ`没有自调用问题  
+> 注释不会通过接口传递  
+> `spring-instrument.jar` Agent
 ##组件
 - JoinPoint
     - ProceedingJoinPoint
 - AspectJProxyFactory 
+- AnnotationBeanConfigurerAspect 
+    - AbstractBeanConfigurerAspect 
+- AnnotationTransactionAspect
+    - AbstractTransactionAspect 
+- JtaAnnotationTransactionAspect 
+- InstrumentationSavingAgent
+- LoadTimeWeaver 
+    - DefaultContextLoadTimeWeaver 
+    - TomcatLoadTimeWeaver
+    - GlassFishLoadTimeWeaver
+    - JBossLoadTimeWeaver
+    - WebSphereLoadTimeWeaver
+    - WebLogicLoadTimeWeaver
+    - InstrumentationLoadTimeWeaver
+    - ReflectiveLoadTimeWeaver
+- AspectJWeavingEnabler
+- LoadTimeWeavingConfigurer 
+- ClassFileTransformers
+    - ClassPreProcessorAgentAdapter 
 ##概念
 - Aspect 
 - Join Point
@@ -62,6 +83,10 @@
 - @After
 - @Around
 - @DeclareParents
+- @Configurable
+- @EnableSpringConfigured 
+- @Transactional
+- @EnableLoadTimeWeaving
 ##Example
 ~~~bash
     execution(modifiers-pattern? ret-type-pattern declaring-type-pattern?name-pattern(param-pattern) 
