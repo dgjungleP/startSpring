@@ -11,10 +11,15 @@
 > 可以在带有返回值的注解中使用`returning`声明返回值对象、使用`trowing`声明异常对象，并在方法参数列表中使用  
 > 可以使用`args`声明和切入点方法什么方法入参对象   
 > 可以根据泛型类型截取到对应的实现方法参数，但是不能直接截取到泛型集合类型的方法参数，可以使用`<?>`全限定定义或者手动判断   
-> 可以使用argNames注解属性，指定参数的限定名
+> 可以使用argNames注解属性，指定参数的限定名   
+> 使用`Aspect`实例化模型,目前spring支持`perthis`、`pertarget` (多实例的情况)   
+> 支持混合使用`XML`和`注解`形式   
+> 在代理模式中，自调用会导致被调用的方法的代理没有办法正常运行，所以在代理模式下尽量不适用自调用  
+> 纯粹的`AspectJ`没有自调用问题
 ##组件
 - JoinPoint
     - ProceedingJoinPoint
+- AspectJProxyFactory 
 ##概念
 - Aspect 
 - Join Point
@@ -56,6 +61,7 @@
 - @AfterThrowing
 - @After
 - @Around
+- @DeclareParents
 ##Example
 ~~~bash
     execution(modifiers-pattern? ret-type-pattern declaring-type-pattern?name-pattern(param-pattern) 
