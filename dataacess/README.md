@@ -24,6 +24,7 @@
 - EntityManagerFactoryUtils 
 - TransactionAwareDataSourceProxy
 - TransactionInterceptor
+- ReactiveAdapterRegistry 
 ###TransactionDefinition的特质
 - Propagation
 - Isolation
