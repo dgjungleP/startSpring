@@ -33,3 +33,8 @@
 - @Transactional
 - @EnableTransactionManagement
 ###声明式事务得实现
+> 基于AOP和元数据配置   
+> `@Transactional`基于`PlatformTransactionManager`提供得线程绑定，不会将事务传播到新起得线程中   
+> `ReactiveTransactionManager`管理是基于`Reactor上下文`而不是线程
+###事务方法调用图
+![事务调用](./img/tx.png)
