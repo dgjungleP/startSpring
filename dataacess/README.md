@@ -17,6 +17,8 @@
 > 如果希望自调用也可以起作用，可以使用`AspectJ mode`   
 > 物理事务和逻辑事务，以及事务的传播性
 ###组件
+- TransactionTemplate 
+- TransactionalOperator
 - TransactionManager
     - PlatformTransactionManager 
     - ReactiveTransactionManager
@@ -33,6 +35,9 @@
 - TransactionInterceptor
 - ReactiveAdapterRegistry 
 - TransactionAttributeSource 
+- AnnotationTransactionAspect
+- DataSourceTransactionManager
+
 ###TransactionDefinition的特质
 - Propagation
 - Isolation
@@ -41,6 +46,8 @@
 ###注解
 - @Transactional
 - @EnableTransactionManagement
+- @EventListener
+- @TransactionalEventListener
 ###声明式事务得实现
 > 基于AOP和元数据配置   
 > `@Transactional`基于`PlatformTransactionManager`提供得线程绑定，不会将事务传播到新起得线程中   
@@ -49,3 +56,10 @@
 ![事务调用](./img/tx.png)
 ###Transaction配置说明
 [@Transactional配置说明](https://docs.spring.io/spring-framework/docs/current/reference/html/data-access.html#transaction-declarative-attransactional-settings)
+
+##DAO Support
+###组件
+- SessionFactoryUtils
+###注解
+- @Repository
+- @PersistenceContext
