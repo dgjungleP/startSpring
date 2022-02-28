@@ -24,6 +24,7 @@
         <module>test</module>
         <module>dataacess</module>
         <module>how2spring</module>
+        <module>myspring</module>
     </modules>
     <dependencies>
         <dependency>
