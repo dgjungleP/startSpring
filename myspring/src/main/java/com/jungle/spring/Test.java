@@ -7,7 +7,7 @@ import com.jungle.spring.mysrping.context.ApplicationContext;
 public class Test {
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ApplicationContext(ApplicationConfig.class);
-        Object service = applicationContext.getBean("userService");
+        System.out.println(applicationContext.getBean("userService"));
     }
 
 }
