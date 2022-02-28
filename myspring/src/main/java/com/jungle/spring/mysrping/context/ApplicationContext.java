@@ -5,10 +5,8 @@ import com.jungle.spring.mysrping.annotation.ComponentScan;
 import com.jungle.spring.mysrping.annotation.Scope;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -53,7 +51,6 @@ public class ApplicationContext {
         }
         ComponentScan componentScan = (ComponentScan) configClass.getDeclaredAnnotation(ComponentScan.class);
         String path = componentScan.value();
-        System.out.println(path);
         //扫描
         //1、 搜寻路径下的所有类
         ClassLoader loader = this.getClass().getClassLoader();
