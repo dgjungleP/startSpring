@@ -1,23 +1,31 @@
 package com.jungle.spring.mysrping.context;
 
+import com.jungle.spring.mysrping.annotation.Autowired;
 import com.jungle.spring.mysrping.annotation.Component;
 import com.jungle.spring.mysrping.annotation.ComponentScan;
 import com.jungle.spring.mysrping.annotation.Scope;
+import com.jungle.spring.mysrping.config.ApplicationConfig;
 
+import java.beans.FeatureDescriptor;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * 对象容器
  */
 public class ApplicationContext {
-    private Class configClass;
+    private Class<ApplicationConfig> configClass;
     private ConcurrentHashMap<String, Object> singletonObjectMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
 
-    public ApplicationContext(Class configClass) {
+    public ApplicationContext(Class<ApplicationConfig> configClass) {
         this.configClass = configClass;
         //解析配置
         handleConfig();
@@ -29,36 +37,41 @@ public class ApplicationContext {
             BeanDefinition definition = beanDefinitionMap.get(beanName);
             if (definition.getScope().equals("Single")) {
                 Object bean = createBean(definition);
-                singletonObjectMap.put(beanName, bean);
+                singletonObjectMap.put(beanName, Objects.requireNonNull(bean));
             }
         }
     }
 
     private Object createBean(BeanDefinition definition) {
-        Class clazz = definition.getClazz();
+        Class<?> clazz = definition.getClazz();
         try {
             Object instance = clazz.getConstructor().newInstance();
+            List<Field> autoWiredFieldList = Arrays.stream(clazz.getDeclaredFields()).filter(field -> field.isAnnotationPresent(Autowired.class)).collect(Collectors.toList());
+            for (Field field : autoWiredFieldList) {
+                field.setAccessible(true);
+                field.set(instance, getBean(field.getName()));
+            }
             return instance;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
+            throw new RuntimeException("Can not create the bean");
         }
-        return null;
     }
 
     private void handleComponentScan() {
         if (!configClass.isAnnotationPresent(ComponentScan.class)) {
             return;
         }
-        ComponentScan componentScan = (ComponentScan) configClass.getDeclaredAnnotation(ComponentScan.class);
+        ComponentScan componentScan = configClass.getDeclaredAnnotation(ComponentScan.class);
         String path = componentScan.value();
         //扫描
         //1、 搜寻路径下的所有类
         ClassLoader loader = this.getClass().getClassLoader();
         URL resource = loader.getResource(path.replace(".", "/"));
-        File file = new File(resource.getFile());
+        File file = new File(Objects.requireNonNull(resource).getFile());
         if (file.isDirectory()) {
             File[] files = file.listFiles();
-            for (File f : files) {
+            for (File f : Objects.requireNonNull(files)) {
                 String className = f.getPath();
                 className = className.substring(className.indexOf("com"), className.indexOf(".class")).replaceAll("\\\\", ".");
                 try {
@@ -89,15 +102,15 @@ public class ApplicationContext {
     public Object getBean(String beanName) {
         if (beanDefinitionMap.containsKey(beanName)) {
             BeanDefinition definition = beanDefinitionMap.get(beanName);
+            Object bean;
             if (definition.getScope().equals("Single")) {
-                Object o = singletonObjectMap.get(beanName);
-                return o;
+                bean = singletonObjectMap.get(beanName);
             } else {
                 //创建bean
+                bean = createBean(definition);
             }
-        } else {
-            return null;
+            return bean;
         }
-        return null;
+        throw new RuntimeException("Cant find the bean");
     }
 }
