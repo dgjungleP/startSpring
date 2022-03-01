@@ -4,6 +4,7 @@ import com.jungle.spring.mysrping.annotation.Autowired;
 import com.jungle.spring.mysrping.annotation.Component;
 import com.jungle.spring.mysrping.annotation.ComponentScan;
 import com.jungle.spring.mysrping.annotation.Scope;
+import com.jungle.spring.mysrping.aware.BeanNameAware;
 import com.jungle.spring.mysrping.config.ApplicationConfig;
 
 import java.beans.FeatureDescriptor;
@@ -36,20 +37,29 @@ public class ApplicationContext {
         for (String beanName : beanDefinitionMap.keySet()) {
             BeanDefinition definition = beanDefinitionMap.get(beanName);
             if (definition.getScope().equals("Single")) {
-                Object bean = createBean(definition);
+                Object bean = createBean(definition, beanName);
                 singletonObjectMap.put(beanName, Objects.requireNonNull(bean));
             }
         }
     }
 
-    private Object createBean(BeanDefinition definition) {
+    private Object createBean(BeanDefinition definition, String beanName) {
         Class<?> clazz = definition.getClazz();
         try {
             Object instance = clazz.getConstructor().newInstance();
+            //自动注入
             List<Field> autoWiredFieldList = Arrays.stream(clazz.getDeclaredFields()).filter(field -> field.isAnnotationPresent(Autowired.class)).collect(Collectors.toList());
             for (Field field : autoWiredFieldList) {
                 field.setAccessible(true);
                 field.set(instance, getBean(field.getName()));
+            }
+            //aware回调
+            if (instance instanceof BeanNameAware) {
+                ((BeanNameAware) instance).setBeanName(beanName);
+            }
+            //初始化
+            if (instance instanceof InitializeBean) {
+                ((InitializeBean) instance).afterPropertiesSet();
             }
             return instance;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -107,7 +117,7 @@ public class ApplicationContext {
                 bean = singletonObjectMap.get(beanName);
             } else {
                 //创建bean
-                bean = createBean(definition);
+                bean = createBean(definition, beanName);
             }
             return bean;
         }
