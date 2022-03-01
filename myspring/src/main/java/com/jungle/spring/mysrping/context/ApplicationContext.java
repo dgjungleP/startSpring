@@ -5,6 +5,7 @@ import com.jungle.spring.mysrping.annotation.Component;
 import com.jungle.spring.mysrping.annotation.ComponentScan;
 import com.jungle.spring.mysrping.annotation.Scope;
 import com.jungle.spring.mysrping.aware.BeanNameAware;
+import com.jungle.spring.mysrping.beanpostprocesser.BeanPostProcessor;
 import com.jungle.spring.mysrping.config.ApplicationConfig;
 
 import java.beans.FeatureDescriptor;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +27,7 @@ public class ApplicationContext {
     private Class<ApplicationConfig> configClass;
     private ConcurrentHashMap<String, Object> singletonObjectMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
+    private List<BeanPostProcessor> beanPostProcessorList = new ArrayList<>();
 
     public ApplicationContext(Class<ApplicationConfig> configClass) {
         this.configClass = configClass;
@@ -57,9 +60,17 @@ public class ApplicationContext {
             if (instance instanceof BeanNameAware) {
                 ((BeanNameAware) instance).setBeanName(beanName);
             }
+            for (BeanPostProcessor processor : beanPostProcessorList) {
+                instance = processor.postProcessBeforeInitialization(instance, beanName);
+            }
+
             //初始化
             if (instance instanceof InitializeBean) {
                 ((InitializeBean) instance).afterPropertiesSet();
+            }
+
+            for (BeanPostProcessor processor : beanPostProcessorList) {
+                instance = processor.postProcessAfterInitialization(instance, beanName);
             }
             return instance;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -80,8 +91,16 @@ public class ApplicationContext {
         URL resource = loader.getResource(path.replace(".", "/"));
         File file = new File(Objects.requireNonNull(resource).getFile());
         if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            for (File f : Objects.requireNonNull(files)) {
+            scanFile(loader, file);
+        }
+    }
+
+    private void scanFile(ClassLoader loader, File file) {
+        File[] files = file.listFiles();
+        for (File f : Objects.requireNonNull(files)) {
+            if (f.isDirectory()) {
+                scanFile(loader, f);
+            } else {
                 String className = f.getPath();
                 className = className.substring(className.indexOf("com"), className.indexOf(".class")).replaceAll("\\\\", ".");
                 try {
@@ -92,7 +111,8 @@ public class ApplicationContext {
                         Component component = clazz.getDeclaredAnnotation(Component.class);
                         BeanDefinition definition = new BeanDefinition();
                         definition.setClazz(clazz);
-                        String beanName = component.value();
+                        String beanName = clazz.getSimpleName();
+                        beanName = beanName.substring(0, 1).toLowerCase() + beanName.substring(1);
                         if (clazz.isAnnotationPresent(Scope.class)) {
                             Scope scope = clazz.getDeclaredAnnotation(Scope.class);
                             definition.setScope(scope.value());
@@ -100,13 +120,16 @@ public class ApplicationContext {
                             definition.setScope("Single");
                         }
                         beanDefinitionMap.put(beanName, definition);
+                        if (BeanPostProcessor.class.isAssignableFrom(clazz)) {
+                            beanPostProcessorList.add((BeanPostProcessor) getBean(beanName));
+                        }
                     }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-
             }
         }
+
     }
 
     public Object getBean(String beanName) {
@@ -114,7 +137,11 @@ public class ApplicationContext {
             BeanDefinition definition = beanDefinitionMap.get(beanName);
             Object bean;
             if (definition.getScope().equals("Single")) {
+                if (!singletonObjectMap.containsKey(beanName)) {
+                    singletonObjectMap.put(beanName, createBean(definition, beanName));
+                }
                 bean = singletonObjectMap.get(beanName);
+
             } else {
                 //创建bean
                 bean = createBean(definition, beanName);
