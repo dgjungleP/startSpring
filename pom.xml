@@ -25,6 +25,7 @@
         <module>dataacess</module>
         <module>how2spring</module>
         <module>myspring</module>
+        <module>demo</module>
     </modules>
     <dependencies>
         <dependency>
